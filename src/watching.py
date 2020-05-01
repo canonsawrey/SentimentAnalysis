@@ -4,7 +4,7 @@
 from pairs import PairsMeanReversion
 
 trades = [
-    PairsMeanReversion("ADBE", "MSFT"),
-    PairsMeanReversion("AAPL", "MSFT"),
-    PairsMeanReversion("SNE", "MSFT"),
+    PairsMeanReversion("ADBE", "MSFT", 2000),
+    #PairsMeanReversion("AAPL", "MSFT"),
+    #PairsMeanReversion("SNE", "MSFT"),
 ]
