@@ -6,3 +6,6 @@ class Strategy:
 
     def pvalue(self) -> float:
         raise Exception('Base class should not implement')
+
+    def descripton(self) -> str:
+        raise Exception('Base class should not implement')

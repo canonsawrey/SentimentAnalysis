@@ -4,7 +4,9 @@ from strategy import Strategy
 import data
 #import statsmodels
 #from statsmodels.tsa.stattools import coint
+import util
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 class PairsMeanReversion(Strategy):
@@ -12,13 +14,13 @@ class PairsMeanReversion(Strategy):
         self.sec1 = sec1
         self.sec2 = sec2
         self.size = size
-        self.deltas = {}
+        self.ratios = {}
         self.sec1_data = {}
         self.sec2_data = {}
         self.name = "PMV: " + sec1 + "-" + sec2
 
     def generate_data(self):
-        self.deltas = {}
+        self.ratios = {}
         self.sec1_data = {}
         self.sec2_data = {}
 
@@ -31,28 +33,33 @@ class PairsMeanReversion(Strategy):
 
         for entry in self.sec1_data.keys():
             if entry in self.sec2_data:
-                self.deltas[entry] = self.sec1_data[entry] - self.sec2_data[entry]
+                self.ratios[entry] = self.sec1_data[entry] / self.sec2_data[entry]
 
     def pvalue(self) -> float:
-        #TODO Calculate the pvalue
-
-        #TODO Check for cointegration of the 2
+        if len(self.sec1_data) == 0:
+            self.generate_data()
 
         return 1.0
 
+    def description(self) -> str:
+        return "Pairs mean reversion pair between " + self.sec1 + " and " + self.sec2 + " over " + str(self.size) + \
+               " days"
+
     def plot(self):
         self.generate_data()
-        dates, s1, s2, d, ratio = [], [], [], [], []
-        for entry in self.deltas.keys():
+        s1, s2, ratio = pd.DataFrame(data={}), pd.DataFrame(data={}), pd.DataFrame(data={})
+        dates = []
+
+        for entry in self.ratios.keys():
             dates.append(entry)
-            d.append(self.deltas[entry])
             s1.append(self.sec1_data[entry])
             s2.append(self.sec2_data[entry])
             ratio.append(self.sec1_data[entry] / self.sec2_data[entry])
-        plt.plot(
-            # dates, d,
-            # dates, s1,
-            # dates, s2,
-            dates, ratio,
-        )
+
+        ratios_mavg_short = ratio.rolling(window=self.size / 10, center=False).mean()
+        ratios_mavg_full = ratio.rolling(window=self.size, center=False).mean()
+
+        plt.plot(dates, ratio)
+        plt.plot(dates, ratios_mavg_full)
+        plt.plot(dates, ratios_mavg_short)
         plt.show()
