@@ -1,6 +1,7 @@
 import requests
 import requests_cache
 import pandas
+import datetime
 
 # For reducing API usage
 requests_cache.install_cache('github_cache', backend='sqlite', expire_after=180)
@@ -28,6 +29,8 @@ def daily_df(security, time='4. close'):
     time_series = time_series_data(security)
     time_series_daily = {}
     for key in time_series:
-        time_series_daily[key] = time_series[key][time]
-    return pandas.DataFrame(list(time_series_daily.items()), columns=['Date', 'Price'])
+        time_series_daily[datetime.datetime.strptime(key, '%Y-%m-%d')] = float(time_series[key][time])
+    df = pandas.DataFrame(list(time_series_daily.items()), columns=['Date', 'Price'])
+    df.set_index('Date', inplace=True)
+    return df
 
