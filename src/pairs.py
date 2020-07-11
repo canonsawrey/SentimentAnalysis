@@ -15,10 +15,10 @@ class PairsMeanReversion(Strategy):
         cutoff_date = datetime.datetime.today() - datetime.timedelta(days=size)
         self.sec1_data = data.daily_df(sec1)
         self.sec1_data = self.sec1_data.loc[self.sec1_data.index > cutoff_date]
-        self.sec1_data['Price'] = util.zscore(self.sec1_data['Price'])
+        self.sec1_data['Price_z'] = util.zscore(self.sec1_data['Price'])
         self.sec2_data = data.daily_df(sec2)
         self.sec2_data = self.sec2_data.loc[self.sec2_data.index > cutoff_date]
-        self.sec2_data['Price'] = util.zscore(self.sec2_data['Price'])
+        self.sec2_data['Price_z'] = util.zscore(self.sec2_data['Price'])
         self.name = "PMV: " + sec1 + "-" + sec2
 
     def description(self) -> str:
@@ -30,5 +30,19 @@ class PairsMeanReversion(Strategy):
 
         merge_df = self.sec1_data.merge(self.sec2_data, on='Date', suffixes=['_'+self.sec1, '_'+self.sec2])
         print(merge_df)
-        merge_df.plot(kind='line', y=['Price_'+self.sec1, 'Price_'+self.sec2])
+        # fig, axes = plt.subplots(nrows=2, ncols=1)
+        merge_df.plot(kind='line', y=['Price_z_'+self.sec1, 'Price_z_'+self.sec2])
+
+        merge_df[self.sec1 + '/' + self.sec2] = merge_df['Price_'+self.sec1] / merge_df['Price_'+self.sec2]
+        merge_df[self.sec1 + '/' + self.sec2 + "_z"] = util.zscore(merge_df[self.sec1 + '/' + self.sec2])
+        merge_df[self.sec1 + '/' + self.sec2 + "_z_rolling5"] = \
+            merge_df[self.sec1 + '/' + self.sec2 + "_z"].rolling(5).mean()
+        merge_df[self.sec1 + '/' + self.sec2 + "_z_rolling60"] = \
+            merge_df[self.sec1 + '/' + self.sec2 + "_z"].rolling(60).mean()
+        merge_df.plot(kind='line', y=[self.sec1 + '/' + self.sec2 + '_z',
+                                                  self.sec1 + '/' + self.sec2 + "_z_rolling5",
+                                                  self.sec1 + '/' + self.sec2 + "_z_rolling60"])
+        plt.axhline(y=merge_df[self.sec1 + '/' + self.sec2 + '_z'].mean(), linestyle='dashed')
+        # plt.axhline(1.0, color='red')
+        # plt.axhline(-1.0, color='green')
         plt.show()

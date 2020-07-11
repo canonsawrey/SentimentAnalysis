@@ -32,5 +32,6 @@ def daily_df(security, time='4. close'):
         time_series_daily[datetime.datetime.strptime(key, '%Y-%m-%d')] = float(time_series[key][time])
     df = pandas.DataFrame(list(time_series_daily.items()), columns=['Date', 'Price'])
     df.set_index('Date', inplace=True)
+    df.sort_index(ascending=True, inplace=True)
     return df
 

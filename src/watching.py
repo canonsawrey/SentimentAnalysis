@@ -12,8 +12,8 @@ trades = [
 
 # Trades that the script will plot for us
 show = [
-    PairsMeanReversion("ADBE", "MSFT", 2000),
-    PairsMeanReversion("ADBE", "MSFT", 200),
-    PairsMeanReversion("ADBE", "MSFT", 20),
+    # PairsMeanReversion("ADBE", "MSFT", 5000),
+    PairsMeanReversion("ADBE", "MSFT", 1000),
+    # PairsMeanReversion("ADBE", "MSFT", 20),
 ]
 
