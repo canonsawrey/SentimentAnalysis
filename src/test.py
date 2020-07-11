@@ -1,6 +1,8 @@
 
-from watching import trades
+import data
 
-for trade in trades:
-    trade.plot()
+print(data.daily_df('MSFT'))
+
+#for trade in trades:
+#    trade.plot()
 

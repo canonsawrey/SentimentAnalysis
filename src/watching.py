@@ -8,3 +8,10 @@ trades = [
     #PairsMeanReversion("AAPL", "MSFT"),
     #PairsMeanReversion("SNE", "MSFT"),
 ]
+
+
+# Trades that the script will plot for us
+show = [
+    PairsMeanReversion("ADBE", "MSFT", 2000),
+]
+

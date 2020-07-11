@@ -1,0 +1,4 @@
+.idea
+*.sqlite
+src/__pycache__/
+venv

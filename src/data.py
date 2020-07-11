@@ -1,31 +1,33 @@
 import requests
-import datetime
+import requests_cache
+import pandas
 
+# For reducing API usage
+requests_cache.install_cache('github_cache', backend='sqlite', expire_after=180)
 
+# API key used for AlphaVantage requests - should store remotely at some point
 av_api_key = "AAGKF1ZHDERDR610"
 
 
-def build_url(security)-> str:
+# Utility function for constructing URL to query AV API
+def build_url(security: str) -> str:
     return "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + security + \
            "&outputsize=full&apikey=" + av_api_key
 
 
-def data(time, security):
-    r = requests.get(url=build_url(security), params=None)
+# Returns time series data for the given security
+def time_series_data(security: str):
+    r = requests.get(url=build_url(security))
     raw = r.json()
     time_series = raw['Time Series (Daily)']
-    today = datetime.date.today()
-    days_, open_, close_, high_, low_ = [], [], [], [], []
+    return time_series
 
-    for i in range(0, time):
-        day = today - datetime.timedelta(days=i)
-        formatted = day.strftime("%Y-%m-%d")
-        if formatted in time_series:
-            price = time_series[formatted]
-            days_.append(day)
-            # open_.append(float(price['1. open']))
-            # high_.append(float(price['2. high']))
-            # low_.append(float(price['3. low']))
-            close_.append(float(price['4. close']))
 
-    return days_, close_
+# Returns a df of daily prices for the given security. If no time specified, closing prices used by default
+def daily_df(security, time='4. close'):
+    time_series = time_series_data(security)
+    time_series_daily = {}
+    for key in time_series:
+        time_series_daily[key] = time_series[key][time]
+    return pandas.DataFrame(list(time_series_daily.items()), columns=['Date', 'Price'])
+
