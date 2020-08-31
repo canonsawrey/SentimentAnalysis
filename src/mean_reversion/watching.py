@@ -1,8 +1,9 @@
 # Canon Sawrey
 # A repository of potential trades the script is watching
 
-from pairs import PairsMeanReversion
+from mean_reversion.pairs import PairsMeanReversion
 
+# Trades that I've backtested and validated
 trades = [
     PairsMeanReversion("ADBE", "MSFT", 20),
     #PairsMeanReversion("AAPL", "MSFT"),

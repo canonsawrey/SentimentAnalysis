@@ -4,10 +4,10 @@ import pandas
 import datetime
 
 # For reducing API usage
-requests_cache.install_cache('github_cache', backend='sqlite', expire_after=180)
+requests_cache.install_cache('av_api_cache', backend='sqlite')
 
 # API key used for AlphaVantage requests - should store remotely at some point
-av_api_key = "AAGKF1ZHDERDR610"
+av_api_key = "GZOXOFFT631PK9LC"#"AAGKF1ZHDERDR610"
 
 
 # Utility function for constructing URL to query AV API

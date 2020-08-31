@@ -1,9 +1,9 @@
 # Script which accomplishes the following
 #     - Checks 'watching' strategies for potential large gains
 #     - Checks active portfolio for sell/divest signals
-from watching import trades
+from mean_reversion.watching import trades
 import matplotlib.pyplot as plt
-import alert
+from mean_reversion import alert
 from datetime import date
 
 debug = True
