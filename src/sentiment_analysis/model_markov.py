@@ -5,7 +5,6 @@ Naive Bayes and Markov Models to do basic sentiment analysis.
 """
 
 # Libraries
-import sys
 import math
 # NLTK is a Python toolkit for natural language processing (NLP)
 # import nltk
@@ -132,18 +131,3 @@ class NaiveBayesMarkovModel:
                 prev = word
             probs.append(prob)
         return probs.index(max(probs)), max(probs)
-
-
-# Takes a NaiveBayesMarkovModel, reads sentences to be evaluated, prints
-# their classification info for the two models
-def classify_sentences(info, sentence: str):
-    nb_class, nb_logprob = info.naive_bayes_classify(sentence)
-    mm_class, mm_logprob = info.markov_model_classify(sentence)
-    print('NB class: ' + nb_class)
-    print('NB logprob: ' + nb_logprob)
-    print('MM class: ' + mm_class)
-    print('MM logprob: ' + mm_logprob)
-
-
-
-

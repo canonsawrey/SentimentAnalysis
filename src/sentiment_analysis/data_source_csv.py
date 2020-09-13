@@ -21,10 +21,9 @@ class CSVFileDataSource(DataSource):
     def load(self):
         with open(self.file) as csv_file:
             csv_reader = reader(csv_file, delimiter=',')
-            #
             for line in csv_reader:
                 self.data.append(Datum(line[0], int(line[1])))
-        print(f'Data from {self.file} read!')
+        print(f'Data from {self.file} read into DataSource')
 
     def list_data(self):
         return self.data
