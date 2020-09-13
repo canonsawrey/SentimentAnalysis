@@ -25,6 +25,13 @@ def tokenize(sentence: str) -> [str]:
     return [t.lower() for t in word_tokenize(sentence)]
 
 
+# Turns cumulative log probabilities into relative probs
+def standardize(probs):
+    exps = [math.exp(x) for x in probs]
+    total = sum(exps)
+    return [x / total for x in exps]
+
+
 """
 
 NaiveBayesMarkovModel - tracks data about training data. Allows for estimation of sentiment using NB and MM
@@ -48,16 +55,7 @@ class NaiveBayesMarkovModel:
         self.total_bigrams = [0, 0, 0, 0, 0]
         self.total_examples = 0
 
-    # update_word_counts
-    # assume space-delimited words/tokens.
-    #
-    # To "tokenize" the sentence we'll make use of NLTK, a widely-used Python natural language
-    # processing (NLP) library.  This will handle otherwise onerous tasks like separating periods
-    # from their attached words.  (Unless the periods are decimal points ... it's more complex
-    # than you might think.)  The result of tokenization is a list of individual strings that are
-    # words or their equivalent.
-    #
-    # Note that sentiment is an integer, not a string, matching the data format
+    # Receives a sentiment and updates the appropriate parts of the model
     def update_word_counts(self, sentence, sentiment):
         # Get the relevant dicts for the sentiment
         s_word_counts = self.word_counts[sentiment]
@@ -85,7 +83,7 @@ class NaiveBayesMarkovModel:
             except ValueError:
                 # Skip bad inputs
                 continue
-        print(f'Model built from {len(data_source.list_data())} pieces of data')
+        print(f'NB, MM built from {len(data_source.list_data())} pieces of data')
 
     # Returns a number indicating sentiment and a log probability of that sentiment (two comma-separated return values).
     def naive_bayes_classify(self, sentence):
@@ -102,7 +100,7 @@ class NaiveBayesMarkovModel:
                 else:
                     prob += math.log(OUT_OF_VOCAB_PROB)
             probs.append(prob)
-
+        probs = standardize(probs)
         return probs.index(max(probs)), max(probs)
 
     # Like naive Bayes, but now use a bigram model
@@ -110,7 +108,7 @@ class NaiveBayesMarkovModel:
         probs = []
         words = tokenize(sentence)
         for i in range(0, 2):
-            # Set inital value to prior
+            # Set initial value to prior
             prob = math.log(self.sentiment_counts[i])
             prob -= math.log(self.total_examples)
             # Handle first word special case
@@ -130,4 +128,6 @@ class NaiveBayesMarkovModel:
                     prob += math.log(OUT_OF_VOCAB_PROB)
                 prev = word
             probs.append(prob)
+
+        probs = standardize(probs)
         return probs.index(max(probs)), max(probs)

@@ -7,6 +7,7 @@ Implementation for a DataSource object that uses CSV data
 
 # Libraries
 from csv import reader
+import pandas as pd
 
 # Locals
 from data_source import DataSource, Datum
@@ -27,3 +28,8 @@ class CSVFileDataSource(DataSource):
 
     def list_data(self):
         return self.data
+
+    # Returns a DF of datum
+    def df_data(self) -> pd.DataFrame:
+        df = pd.read_csv(self.file)
+        return df.rename(columns={df.columns[0]: 'sentence', df.columns[1]: 'sentiment'})
