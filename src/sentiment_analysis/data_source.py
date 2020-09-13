@@ -6,28 +6,19 @@ or part of a collection from an online dataset (think Kaggle).
 
 """
 
-import pandas as pd
-import datetime as dt
-py_twit = __import__("python-twitter")
+
+class Datum:
+    def __init__(self, sentence: str, sentiment: int):
+        self.sentence = sentence
+        self.sentiment = sentiment
 
 
 class DataSource:
-    # Prepares and returns DF od data. For example - collect data from an API, load file data into memory, etc.
-    def load(self, start: dt.date = dt.date(1970, 1, 1), end: dt.date = dt.date.today()) -> pd.DataFrame:
+    # Prepares and returns DF of data. For example - collect data from an API, load file data into memory, etc.
+    def load(self):
         raise NotImplementedError("The method not implemented")
 
-
-"""
-
-Implementations
-
-"""
-
-
-class TwitterDataSource(DataSource):
-    def load(self, start: dt.date = dt.date(1970, 1, 1), end: dt.date = dt.date.today()) -> pd.DataFrame:
-
-
-        return pd.DataFrame()
+    def list_data(self) -> [Datum]:
+        raise NotImplementedError("The method not implemented")
 
 
