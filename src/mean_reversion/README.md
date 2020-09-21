@@ -1,0 +1,1 @@
+This directory contains file related to a mean reversion trading strategy. 

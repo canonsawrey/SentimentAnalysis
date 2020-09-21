@@ -14,6 +14,7 @@ class Model:
     def build_from_data_source(self, tds: TrainingDataSource):
         raise NotImplementedError("The method not implemented")
 
-    # Classifies the sentence; returns tuple of form (classification, prob(classfication))
+    # Classifies the sentence; returns tuple of form (classification, prob(classification))
+    # if prob(classification) cannot be calculated, return None
     def classify(self, sentence: str):
         raise NotImplementedError("The method not implemented")
