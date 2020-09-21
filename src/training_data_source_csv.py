@@ -10,10 +10,10 @@ from csv import reader
 import pandas as pd
 
 # Locals
-from data_source import DataSource, Datum
+from training_data_source import TrainingDataSource, TrainingDatum
 
 
-class CSVFileDataSource(DataSource):
+class CSVFileTrainingDataSource(TrainingDataSource):
     # CSV file must be of format SENTENCE, SENTIMENT
     def __init__(self, file: str):
         self.data = []
@@ -23,8 +23,8 @@ class CSVFileDataSource(DataSource):
         with open(self.file) as csv_file:
             csv_reader = reader(csv_file, delimiter=',')
             for line in csv_reader:
-                self.data.append(Datum(line[0], int(line[1])))
-        print(f'Data from {self.file} read into DataSource')
+                self.data.append(TrainingDatum(line[0], int(line[1])))
+        print(f'Data from {self.file} loaded')
 
     def list_data(self):
         return self.data

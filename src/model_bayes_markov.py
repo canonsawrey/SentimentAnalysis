@@ -13,7 +13,8 @@ from nltk.tokenize import word_tokenize
 from nltk.util import bigrams
 
 # Locals
-from data_source import DataSource
+from training_data_source import TrainingDataSource
+from model import Model
 
 # Constants
 # Probability of a unigram or bigram that hasn't been seen - think  "practically a rounding error"
@@ -45,7 +46,7 @@ NaiveBayesMarkovModel - tracks data about training data. Allows for estimation o
 """
 
 
-class NaiveBayesMarkovModel:
+class NaiveBayesMarkovModel(Model):
     def __init__(self):
         self.word_counts = [{}, {}, {}, {}, {}]
         self.bigram_counts = [{}, {}, {}, {}, {}]
@@ -54,6 +55,20 @@ class NaiveBayesMarkovModel:
         self.bigram_denoms = [{}, {}, {}, {}, {}]
         self.total_bigrams = [0, 0, 0, 0, 0]
         self.total_examples = 0
+
+    # Builds a model_info object from a TrainingDataSource
+    def build_from_data_source(self, data_source: TrainingDataSource):
+        for datum in data_source.list_data():
+            try:
+                sentiment = datum.sentiment
+                sentence = datum.sentence
+                self.sentiment_counts[sentiment] += 1
+                self.total_examples += 1
+                self.update_word_counts(sentence, sentiment)
+            except ValueError:
+                # Skip bad inputs
+                continue
+        print(f'NB, MM built from {len(data_source.list_data())} pieces of data')
 
     # Receives a sentiment and updates the appropriate parts of the model
     def update_word_counts(self, sentence, sentiment):
@@ -71,19 +86,9 @@ class NaiveBayesMarkovModel:
             s_bigram_denoms[bigram[0]] = s_bigram_denoms.get(bigram[0], 0) + 1
             self.total_bigrams[sentiment] += 1
 
-    # Builds a model_info object from a DataSource
-    def build_from_data_source(self, data_source: DataSource):
-        for datum in data_source.list_data():
-            try:
-                sentiment = datum.sentiment
-                sentence = datum.sentence
-                self.sentiment_counts[sentiment] += 1
-                self.total_examples += 1
-                self.update_word_counts(sentence, sentiment)
-            except ValueError:
-                # Skip bad inputs
-                continue
-        print(f'NB, MM built from {len(data_source.list_data())} pieces of data')
+    # Return the Markov Model classification by default
+    def classify(self, sentence: str):
+        return self.markov_model_classify(sentence)
 
     # Returns a number indicating sentiment and a log probability of that sentiment (two comma-separated return values).
     def naive_bayes_classify(self, sentence):
@@ -128,6 +133,5 @@ class NaiveBayesMarkovModel:
                     prob += math.log(OUT_OF_VOCAB_PROB)
                 prev = word
             probs.append(prob)
-
         probs = standardize(probs)
         return probs.index(max(probs)), max(probs)
