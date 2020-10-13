@@ -135,3 +135,14 @@ class NaiveBayesMarkovModel(Model):
             probs.append(prob)
         probs = standardize(probs)
         return probs.index(max(probs)), max(probs)
+
+
+# Convenience classes
+class NaiveBayesModel(NaiveBayesMarkovModel):
+    def classify(self, sentence: str):
+        return self.naive_bayes_classify(sentence)
+
+
+class MarkovModel(NaiveBayesMarkovModel):
+    def classify(self, sentence: str):
+        return self.markov_model_classify(sentence)
