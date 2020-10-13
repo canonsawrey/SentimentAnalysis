@@ -18,3 +18,8 @@ class Model:
     # if prob(classification) cannot be calculated, return None
     def classify(self, sentence: str):
         raise NotImplementedError("The method not implemented")
+
+    # Classifies the sentence; returns tuple of form (classification, prob(classification))
+    # if prob(classification) cannot be calculated, return None
+    def batch_classify(self, sentences: [str]):
+        raise NotImplementedError("The method not implemented")

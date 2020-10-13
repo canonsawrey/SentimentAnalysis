@@ -15,6 +15,7 @@ from nltk.util import bigrams
 # Locals
 from training_data_source import TrainingDataSource
 from model import Model
+from util import standardize
 
 # Constants
 # Probability of a unigram or bigram that hasn't been seen - think  "practically a rounding error"
@@ -24,13 +25,6 @@ OUT_OF_VOCAB_PROB = 0.0000000001
 # Get words from a line in a consistent way. Uses NLTK, standardizes to lowercase
 def tokenize(sentence: str) -> [str]:
     return [t.lower() for t in word_tokenize(sentence)]
-
-
-# Turns cumulative log probabilities into relative probs
-def standardize(probs):
-    exps = [math.exp(x) for x in probs]
-    total = sum(exps)
-    return [x / total for x in exps]
 
 
 """
@@ -68,7 +62,6 @@ class NaiveBayesMarkovModel(Model):
             except ValueError:
                 # Skip bad inputs
                 continue
-        print(f'NB, MM built from {len(data_source.list_data())} pieces of data')
 
     # Receives a sentiment and updates the appropriate parts of the model
     def update_word_counts(self, sentence, sentiment):
@@ -136,13 +129,24 @@ class NaiveBayesMarkovModel(Model):
         probs = standardize(probs)
         return probs.index(max(probs)), max(probs)
 
+    def batch_classify(self, sentences: [str]):
+        return [self.classify(sentence) for sentence in sentences]
+
 
 # Convenience classes
 class NaiveBayesModel(NaiveBayesMarkovModel):
+    def build_from_data_source(self, data_source: TrainingDataSource):
+        NaiveBayesMarkovModel.build_from_data_source(self, data_source)
+        print("Finished training Naive Bayes")
+
     def classify(self, sentence: str):
         return self.naive_bayes_classify(sentence)
 
 
 class MarkovModel(NaiveBayesMarkovModel):
+    def build_from_data_source(self, data_source: TrainingDataSource):
+        NaiveBayesMarkovModel.build_from_data_source(self, data_source)
+        print("Finished training Markov")
+
     def classify(self, sentence: str):
         return self.markov_model_classify(sentence)

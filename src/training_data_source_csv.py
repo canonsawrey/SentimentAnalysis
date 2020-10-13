@@ -32,4 +32,4 @@ class CSVFileTrainingDataSource(TrainingDataSource):
     # Returns a DF of datum
     def df_data(self) -> pd.DataFrame:
         df = pd.read_csv(self.file)
-        return df.rename(columns={df.columns[0]: 'sentence', df.columns[1]: 'sentiment'})
+        return df.rename(columns={df.columns[0]: 'sentences', df.columns[1]: 'labels'})
