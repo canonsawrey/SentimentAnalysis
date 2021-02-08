@@ -26,7 +26,7 @@ class TrainingDataSource:
     def list_data(self) -> [TrainingDatum]:
         raise NotImplementedError("The method not implemented")
 
-    # Returns a DF of datum
+    # Returns a DF of data
     def df_data(self) -> pd.DataFrame:
         raise NotImplementedError("The method not implemented")
 

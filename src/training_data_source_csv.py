@@ -29,7 +29,7 @@ class CSVFileTrainingDataSource(TrainingDataSource):
     def list_data(self):
         return self.data
 
-    # Returns a DF of datum
+    # Returns a DF of data
     def df_data(self) -> pd.DataFrame:
         df = pd.read_csv(self.file)
         return df.rename(columns={df.columns[0]: 'sentences', df.columns[1]: 'labels'})
